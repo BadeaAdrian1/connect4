@@ -16,7 +16,9 @@ const GamesList = () => {
   useEffect(() => {
     const fetchGames = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/api/sets/${setId}/games`);
+        const response = await fetch(
+          `http://localhost:8080/api/sets/${setId}/games`
+        );
         const data = await response.json();
         setGamesList(data);
       } catch (error) {

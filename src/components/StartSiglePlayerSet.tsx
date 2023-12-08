@@ -1,8 +1,8 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 
-const StartSet = () => {
-  const [numberOfGames, setNumberOfGames] = useState(0);
-  const [responseCode, setResponseCode] = useState(0);
+const ManualStartSet = () => {
+  const [numberOfGames, setNumberOfGames] = useState<number>(0);
+  const [responseCode, setResponseCode] = useState<number | null>(null);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setNumberOfGames(e.target.valueAsNumber);
@@ -12,7 +12,7 @@ const StartSet = () => {
     e.preventDefault();
     try {
       const response = await fetch(
-        `http://localhost:8080/api/sets/start?numberOfGames=${numberOfGames}`,
+        `http://localhost:8080/api/sets/single-player/start?numberOfGames=${numberOfGames}`,
         { method: "POST" }
       );
       const statusCode: number = response.status;
@@ -35,7 +35,7 @@ const StartSet = () => {
           <input
             className="form-control form-control-md"
             type="number"
-            placeholder="e.g. 1,10,200..."
+            placeholder="e.g. 1, 10, 200..."
             id="inputValue"
             min="1"
             onChange={handleChange}
@@ -46,7 +46,7 @@ const StartSet = () => {
             type="submit"
             className="btn btn-outline-secondary bg-dark text-white"
           >
-            Start
+            Start Single Set
           </button>
         </span>
       </div>
@@ -62,4 +62,4 @@ const StartSet = () => {
   );
 };
 
-export default StartSet;
+export default ManualStartSet;

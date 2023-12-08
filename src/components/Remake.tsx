@@ -16,7 +16,8 @@ const Remake = () => {
     ["", "", "", "", "", "", ""],
     ["", "", "", "", "", "", ""],
   ]);
-  const [moveNumber, setMoveNumber] = useState<number>();
+  const [moveNumber, setMoveNumber] = useState<number>(1);
+  const [totalMoves, setTotalMoves] = useState(0);
 
   const lettersToNumber = new Map([
     ["A", 0],
@@ -41,19 +42,22 @@ const Remake = () => {
     ];
 
     for (let i = 0; i <= currentMoveNumber; i++) {
-      let col = lettersToNumber.get(moves[i].column);
-      if (typeof col === "number") {
+      if (moves[i] && moves[i].column) {
+        let col = lettersToNumber.get(moves[i].column);
+
         for (let j = col; j < 7; j++) {
           for (let k = 5; k >= 0; k--) {
             if (currentBoard[k][j] !== "") {
               continue;
             } else {
               currentBoard[k][j] = moves[i].player === "OUR_TEAM" ? "R" : "Y";
+              break;
             }
           }
+          break;
         }
       } else {
-        console.log("Column is not between A-G");
+        console.log("Move is undefined at index: " + i);
       }
     }
 
@@ -62,25 +66,15 @@ const Remake = () => {
 
   const handleKeyPress = (event: KeyboardEvent) => {
     switch (event.key) {
-      case "ArrowUp":
-        if (moveNumber === moves.length - 1) {
-          alert(
-            "This is the last move of the game, press down arrow to see the previous move!"
-          );
+      case "ArrowRight":
+        if (moveNumber < totalMoves) {
+          setMoveNumber((moveNumber) => moveNumber + 1);
         } else {
-          setMoveNumber((moveNumber) => moveNumber+1);
-          console.log(moveNumber);
+          alert("This is the last move of the game!");
         }
         break;
-      case "ArrowDown":
-        if (moveNumber === 0) {
-          alert(
-            "This is the first move of the game, press up arrow to see the next move!"
-          );
-        } else {
-          setMoveNumber((moveNumber) => Math.max(0,moveNumber-1));
-          console.log(moveNumber);
-        }
+      case "ArrowLeft":
+        setMoveNumber((moveNumber) => Math.max(0, moveNumber - 1));
         break;
       default:
         break;
@@ -95,6 +89,7 @@ const Remake = () => {
         );
         const data = await response.json();
         setMoves(data.moveDtosList);
+        setTotalMoves(data.moveDtosList.length-1);
         setMoveNumber(data.moveDtosList.length-1);
       } catch (error) {
         console.log("Error fetching game details: ", error);
@@ -110,40 +105,41 @@ const Remake = () => {
     };
   }, []);
 
+  useEffect(() => {
+    displayBoard(moveNumber);
+  }, [moveNumber]);
+
   // useEffect(() => {
-  //   console.log(moveNumber);
-  //   displayBoard(moveNumber);
-  // }, [moveNumber]);
+  //   setMoveNumber(totalMoves);
+  // }, [moves]);
 
   return (
-    <div
-      className="container mt-4 px-5 py-2 text-center"
-      style={{
+    <div className="d-flex flex-column align-items-center text-center flex-grow-1">
+      <div className="mt-1" style={{
         backgroundColor: "#111111",
-        width: "55rem",
-        height: "35rem",
-        borderRadius: "2rem",
-      }}
-    >
-      {board.map((row: string[], rowIndex) => (
-        <div key={rowIndex} className="row py-2">
-          {row.map((col: string, colIndex) => (
-            <span
-              className="col mx-3"
-              key={colIndex}
-              style={{
-                backgroundColor:
-                  col === "" ? "grey" : col === "R" ? "red" : "yellow",
-                height: "75px",
-                borderRadius: "50%",
-              }}
-            ></span>
-          ))}
-        </div>
-      ))}
+        borderRadius: "4%",
+        width: "50%"
+      }}>
+        {board.map((row: string[], rowIndex) => (
+          <div key={rowIndex} className="d-flex p-1">
+            {row.map((col: string, colIndex) => (
+              <span
+                className="col m-2"
+                key={colIndex}
+                style={{
+                  backgroundColor:
+                    col === "" ? "grey" : col === "R" ? "red" : "yellow",
+                  height: "7rem",
+                  borderRadius: "50%",
+                }}
+              ></span>
+            ))}
+          </div>
+        ))}
+      </div>
       <div>
-        <p>Move number: {moveNumber+1}</p>
-        <p>Press up/down arrows to see the moves!</p>
+        <p>Move number: {moveNumber + 1}</p>
+        <p>Press right/left arrows to see the moves!</p>
       </div>
     </div>
   );

@@ -16,8 +16,8 @@ const Remake = () => {
     ["", "", "", "", "", "", ""],
     ["", "", "", "", "", "", ""],
   ]);
-  const [moveNumber, setMoveNumber] = useState<number>(1);
-  const [totalMoves, setTotalMoves] = useState(0);
+  const [moveNumber, setMoveNumber] = useState<number>(0);
+  const [totalMoves, setTotalMoves] = useState<number>(0);
 
   const lettersToNumber = new Map([
     ["A", 0],
@@ -31,38 +31,60 @@ const Remake = () => {
 
   let { gameId } = useParams();
 
-  const displayBoard = (currentMoveNumber: number) => {
-    let currentBoard: string[][] = [
-      ["", "", "", "", "", "", ""],
-      ["", "", "", "", "", "", ""],
-      ["", "", "", "", "", "", ""],
-      ["", "", "", "", "", "", ""],
-      ["", "", "", "", "", "", ""],
-      ["", "", "", "", "", "", ""],
-    ];
-
-    for (let i = 0; i <= currentMoveNumber; i++) {
-      if (moves[i] && moves[i].column) {
-        let col = lettersToNumber.get(moves[i].column);
-
-        for (let j = col; j < 7; j++) {
-          for (let k = 5; k >= 0; k--) {
-            if (currentBoard[k][j] !== "") {
-              continue;
-            } else {
-              currentBoard[k][j] = moves[i].player === "OUR_TEAM" ? "R" : "Y";
-              break;
-            }
-          }
-          break;
-        }
-      } else {
-        console.log("Move is undefined at index: " + i);
+  useEffect(() => {
+    const fetchMoves = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/api/games/details?gameId=${gameId}`
+        );
+        const data = await response.json();
+        setMoves(data.moveDtosList);
+        setTotalMoves(data.moveDtosList.length-1);
+        setMoveNumber(data.moveDtosList.length-1);
+      } catch (error) {
+        console.log("Error fetching game details: ", error);
       }
-    }
+    };
 
-    setBoard(currentBoard);
-  };
+    fetchMoves();
+  }, [gameId]);
+
+  useEffect(() => {
+    const displayBoard = () => {
+      let currentBoard: string[][] = [
+        ["", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", ""],
+      ];
+  
+      for (let i = 0; i <= moveNumber; i++) {
+        if (moves[i] && moves[i].column) {
+          let col = lettersToNumber.get(moves[i].column);
+  
+          for (let j = col; j < 7; j++) {
+            for (let k = 5; k >= 0; k--) {
+              if (currentBoard[k][j] !== "") {
+                continue;
+              } else {
+                currentBoard[k][j] = moves[i].player === "OUR_TEAM" ? "R" : "Y";
+                break;
+              }
+            }
+            break;
+          }
+        } else {
+          console.log("Move is undefined at index: " + i);
+        }
+      }
+  
+      setBoard(currentBoard);
+    };
+
+    displayBoard();
+  }, [moveNumber]);
 
   const handleKeyPress = (event: KeyboardEvent) => {
     switch (event.key) {
@@ -81,46 +103,23 @@ const Remake = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchMoves = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:8080/api/games/details?gameId=${gameId}`
-        );
-        const data = await response.json();
-        setMoves(data.moveDtosList);
-        setTotalMoves(data.moveDtosList.length - 1);
-        setMoveNumber(data.moveDtosList.length - 1);
-      } catch (error) {
-        console.log("Error fetching game details: ", error);
-      }
-    };
-
-    fetchMoves();
-
+  useEffect (() => {
     window.addEventListener("keydown", handleKeyPress);
-
+    
     return () => {
       window.removeEventListener("keydown", handleKeyPress);
     };
-  }, []);
-
-  useEffect(() => {
-    displayBoard(moveNumber);
-  }, [moveNumber]);
-
-  // useEffect(() => {
-  //   setMoveNumber(totalMoves);
-  // }, [moves]);
+  },[handleKeyPress]);
 
   return (
-    <div className="d-flex flex-column align-items-center text-center flex-grow-1">
+    <div className="d-flex flex-column align-items-center text-center">
       <div
-        className="mt-1"
+        className="my-4"
         style={{
           backgroundColor: "#111111",
           borderRadius: "4%",
-          width: "50%",
+          width: "700px",
+          height: "500px"
         }}
       >
         {board.map((row: string[], rowIndex) => (
@@ -132,7 +131,7 @@ const Remake = () => {
                 style={{
                   backgroundColor:
                     col === "" ? "grey" : col === "R" ? "red" : "yellow",
-                  height: "7rem",
+                  height: "60px",
                   borderRadius: "50%",
                 }}
               ></span>

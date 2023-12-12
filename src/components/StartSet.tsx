@@ -1,7 +1,7 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 
 const StartSet = () => {
-  const [numberOfGames, setNumberOfGames] = useState(0);
+  const [numberOfGames, setNumberOfGames] = useState(1);
   const [responseCode, setResponseCode] = useState(0);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {

@@ -39,8 +39,8 @@ const Remake = () => {
         );
         const data = await response.json();
         setMoves(data.moveDtosList);
-        setTotalMoves(data.moveDtosList.length-1);
-        setMoveNumber(data.moveDtosList.length-1);
+        setTotalMoves(data.moveDtosList.length - 1);
+        setMoveNumber(data.moveDtosList.length - 1);
       } catch (error) {
         console.log("Error fetching game details: ", error);
       }
@@ -59,11 +59,11 @@ const Remake = () => {
         ["", "", "", "", "", "", ""],
         ["", "", "", "", "", "", ""],
       ];
-  
+
       for (let i = 0; i <= moveNumber; i++) {
         if (moves[i] && moves[i].column) {
           let col = lettersToNumber.get(moves[i].column);
-  
+
           for (let j = col; j < 7; j++) {
             for (let k = 5; k >= 0; k--) {
               if (currentBoard[k][j] !== "") {
@@ -79,7 +79,7 @@ const Remake = () => {
           console.log("Move is undefined at index: " + i);
         }
       }
-  
+
       setBoard(currentBoard);
     };
 
@@ -103,13 +103,13 @@ const Remake = () => {
     }
   };
 
-  useEffect (() => {
+  useEffect(() => {
     window.addEventListener("keydown", handleKeyPress);
-    
+
     return () => {
       window.removeEventListener("keydown", handleKeyPress);
     };
-  },[handleKeyPress]);
+  }, [handleKeyPress]);
 
   return (
     <div className="d-flex flex-column align-items-center text-center">
@@ -119,7 +119,7 @@ const Remake = () => {
           backgroundColor: "#111111",
           borderRadius: "4%",
           width: "700px",
-          height: "500px"
+          height: "500px",
         }}
       >
         {board.map((row: string[], rowIndex) => (

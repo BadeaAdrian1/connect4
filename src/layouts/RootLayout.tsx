@@ -12,7 +12,7 @@ const RootLayout = () => {
       </main>
       <footer className="text-white">
         <div className="text-center" style={{ backgroundColor: "#111111" }}>
-          <div>©️ACASA-URZICENI</div>
+          <div>ACASA-URZICENI&copy;</div>
           <div>
             <a
               href="https://www.vodafone.com/careers/professional-career-areas/shared-services"

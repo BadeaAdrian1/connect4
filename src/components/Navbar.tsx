@@ -55,10 +55,10 @@ const Navbar = () => {
                   onClick={() => setIsOpen(!isOpen)}
                 >
                   <NavLink
-                    to="play/manual-start-set"
+                    to="start/set"
                     style={{ color: "black", textDecoration: "none" }}
                   >
-                    Single Player vs AI
+                    Bot vs Bot
                   </NavLink>
                 </a>
                 <a
@@ -67,10 +67,22 @@ const Navbar = () => {
                   onClick={() => setIsOpen(!isOpen)}
                 >
                   <NavLink
-                    to="play/start-set"
+                    to="start/single-player-set"
                     style={{ color: "black", textDecoration: "none" }}
                   >
-                    Play
+                    Single Player Game
+                  </NavLink>
+                </a>
+                <a
+                  className="dropdown-item"
+                  href="#"
+                  onClick={() => setIsOpen(!isOpen)}
+                >
+                  <NavLink
+                    to="start/multiplayer-set"
+                    style={{ color: "black", textDecoration: "none" }}
+                  >
+                    Multiplayer Game
                   </NavLink>
                 </a>
               </div>
